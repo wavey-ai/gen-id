@@ -4,12 +4,12 @@ use std::time::{SystemTime, UNIX_EPOCH};
 pub const DEFAULT_EPOCH: u64 = 1609459200000;
 
 #[repr(u8)]
-enum ConfigPreset {
+pub enum ConfigPreset {
     ShortEpochMaxNodes = 0,
     Custom(u64, u8, u8, u8),
 }
 
-struct IdGenerator {
+pub struct IdGenerator {
     epoch: u64,
     epoch_bits: u8,
     node_bits: u8,
@@ -19,7 +19,7 @@ struct IdGenerator {
 }
 
 #[derive(Debug)]
-struct DecodedId {
+pub struct DecodedId {
     time: u64,
     node_id: u64,
     incrementing_id: u64,
@@ -27,7 +27,7 @@ struct DecodedId {
 }
 
 impl IdGenerator {
-    fn new(preset: ConfigPreset, epoch: u64) -> Self {
+    pub fn new(preset: ConfigPreset, epoch: u64) -> Self {
         match preset {
             ConfigPreset::ShortEpochMaxNodes => Self {
                 epoch,
