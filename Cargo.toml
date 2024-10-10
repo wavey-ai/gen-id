@@ -1,10 +1,10 @@
 [package]
 name = "gen-id"
 description = "Snowflakes."
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/wavey-ai/soundkit"
+repository = "https://github.com/wavey-ai/gen-id"
 readme = "README.md"
 
 [dependencies]
