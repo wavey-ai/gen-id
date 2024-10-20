@@ -20,10 +20,10 @@ pub struct IdGenerator {
 
 #[derive(Debug)]
 pub struct DecodedId {
-    time: u64,
-    node_id: u64,
-    incrementing_id: u64,
-    config_id: u8,
+    pub time: u64,
+    pub node_id: u64,
+    pub incrementing_id: u64,
+    pub config_id: u8,
 }
 
 impl IdGenerator {
