@@ -186,4 +186,21 @@ mod tests {
         let gen = IdGenerator::new(ConfigPreset::ShortEpochMaxNodes, u64::MAX);
         let _ = gen.next_id(1);
     }
+
+    #[test]
+    fn test_node_id_encoding() {
+        let gen = IdGenerator::new(ConfigPreset::ShortEpochMaxNodes, DEFAULT_EPOCH);
+        let test_node_ids = [0, 1, 2, 3, 4, 5, 6, gen.max_nodes / 2, gen.max_nodes - 1];
+
+        for &node_id in &test_node_ids {
+            let id = gen.next_id(node_id);
+            let decoded = gen.decode_id(id);
+            dbg!(node_id);
+            assert_eq!(
+                decoded.node_id, node_id as u64,
+                "Node ID did not match for node_id {}",
+                node_id
+            );
+        }
+    }
 }
