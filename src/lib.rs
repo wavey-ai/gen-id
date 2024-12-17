@@ -1,3 +1,4 @@
+use serde::Serialize;
 use std::sync::atomic::{AtomicU16, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -18,7 +19,7 @@ pub struct IdGenerator {
     next_id: AtomicU16,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct DecodedId {
     pub time: u64,
     pub node_id: u64,
