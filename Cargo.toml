@@ -10,3 +10,8 @@ readme = "README.md"
 [dependencies]
 rand = "0.8.5"
 serde = { version = "1.0", features = ["derive"] }
+getrandom = { version = "0.2", optional = true }
+
+[features]
+default = []
+wasm = ["getrandom/js"]
