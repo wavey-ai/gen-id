@@ -7,11 +7,22 @@ license = "MIT"
 repository = "ssh://git@github.com/wavey-ai/gen-id"
 readme = "README.md"
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
 rand = "0.8.5"
 serde = { version = "1.0", features = ["derive"] }
 getrandom = { version = "0.2", optional = true }
+wasm-bindgen = { version = "0.2", optional = true }
+serde-wasm-bindgen = { version = "0.5", optional = true }
+js-sys = { version = "0.3", optional = true }
 
 [features]
 default = []
-wasm = ["getrandom/js"]
+wasm = [
+  "getrandom/js",
+  "dep:wasm-bindgen",
+  "dep:serde-wasm-bindgen",
+  "dep:js-sys",
+]

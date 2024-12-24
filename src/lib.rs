@@ -2,6 +2,9 @@ use serde::Serialize;
 use std::sync::atomic::{AtomicU16, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
+
 pub const DEFAULT_EPOCH: u64 = 1609459200000;
 
 #[repr(u8)]
@@ -142,6 +145,55 @@ impl IdGenerator {
     pub fn next_id(&self, node_id: u16) -> u64 {
         let incrementing_id = self.next_id.fetch_add(1, Ordering::SeqCst) & ((1 << 10) - 1);
         self.generate_id(node_id, incrementing_id)
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen]
+pub struct WasmIdGenerator {
+    generator: IdGenerator,
+}
+
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen]
+impl WasmIdGenerator {
+    #[wasm_bindgen(constructor)]
+    pub fn new(preset_type: u8, epoch: u64) -> Result<WasmIdGenerator, JsValue> {
+        let preset = match preset_type {
+            0 => ConfigPreset::ShortEpochMaxNodes,
+            1 => ConfigPreset::ShardedConfig,
+            _ => return Err(JsValue::from_str("Invalid preset type")),
+        };
+
+        Ok(WasmIdGenerator {
+            generator: IdGenerator::new(preset, epoch),
+        })
+    }
+
+    #[wasm_bindgen]
+    pub fn next_id(&self, node_id: u16) -> u64 {
+        self.generator.next_id(node_id)
+    }
+
+    #[wasm_bindgen]
+    pub fn decode_id(&self, id: u64) -> Result<JsValue, JsValue> {
+        let decoded = self.generator.decode_id(id);
+        serde_wasm_bindgen::to_value(&decoded).map_err(|e| JsValue::from_str(&e.to_string()))
+    }
+
+    #[wasm_bindgen]
+    pub fn derive_sharded_id(&self, original_id: u64, shard: u16) -> Result<u64, JsValue> {
+        if self.generator.shard_bits == 0 {
+            return Err(JsValue::from_str(
+                "This configuration doesn't support sharding",
+            ));
+        }
+
+        if shard as u64 >= (1 << self.generator.shard_bits) {
+            return Err(JsValue::from_str("Shard number exceeds maximum"));
+        }
+
+        Ok(self.generator.derive_sharded_id(original_id, shard))
     }
 }
 
