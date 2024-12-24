@@ -4,7 +4,7 @@ description = "Snowflakes."
 version = "0.3.0"
 edition = "2021"
 license = "MIT"
-repository = "ssh://git@github.com/wavey-ai/gen-id"
+repository = "https://github.com/wavey-ai/gen-id"
 readme = "README.md"
 
 [lib]
