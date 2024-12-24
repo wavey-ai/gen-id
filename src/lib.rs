@@ -72,24 +72,16 @@ impl IdGenerator {
             panic!("Shard number exceeds maximum");
         }
 
-        println!("Original:   {:064b}", original_id);
-
         let shard_shift = 13;
         let shard_width = self.shard_bits;
 
         let shard_mask = ((1u64 << shard_width) - 1) << shard_shift;
-        println!("Shard mask: {:064b}", shard_mask);
 
         let base_id = original_id & !shard_mask;
-        println!("Base ID:    {:064b}", base_id);
 
         let shard_part = ((shard as u64) & ((1 << shard_width) - 1)) << shard_shift;
-        println!("Shard part: {:064b}", shard_part);
 
-        let final_id = base_id | shard_part;
-        println!("Final:      {:064b}", final_id);
-
-        final_id
+        base_id | shard_part
     }
 
     pub fn decode_id(&self, id: u64) -> DecodedId {
@@ -165,12 +157,12 @@ mod tests {
         assert_eq!(gen_short.node_bits, 14);
         assert_eq!(gen_short.max_nodes, 16384);
         assert_eq!(gen_short.config_id, 3);
-        assert_eq!(gen_short.shard_bits, 0); // Add this check
+        assert_eq!(gen_short.shard_bits, 0);
 
         let custom_epoch = 1609459200000;
         let custom_epoch_bits = 36;
         let custom_node_bits = 13;
-        let custom_shard_bits = 2; // Add this
+        let custom_shard_bits = 2;
         let custom_config_id = 1;
         let gen_custom = IdGenerator::new(
             ConfigPreset::Custom(
@@ -185,7 +177,7 @@ mod tests {
         assert_eq!(gen_custom.epoch, custom_epoch);
         assert_eq!(gen_custom.epoch_bits, custom_epoch_bits);
         assert_eq!(gen_custom.node_bits, custom_node_bits);
-        assert_eq!(gen_custom.shard_bits, custom_shard_bits); // Add this check
+        assert_eq!(gen_custom.shard_bits, custom_shard_bits);
         assert_eq!(gen_custom.max_nodes, 8192);
         assert_eq!(gen_custom.config_id, custom_config_id);
     }
