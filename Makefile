@@ -1,3 +1,3 @@
 .PHONEY:
 wasm:
-	cargo build --features wasm
+	wasm-pack build --features wasm
