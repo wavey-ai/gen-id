@@ -1,3 +1,3 @@
 .PHONEY:
 wasm:
-	wasm-pack build --features wasm
+	wasm-pack build --target web --features wasm
